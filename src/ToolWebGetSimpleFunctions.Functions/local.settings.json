@@ -1,0 +1,29 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated"
+  },
+  "Application": {
+    "TimeZone": "Asia/Tokyo"
+  },
+  "SourceCollection": {
+    "OfficialNewsUrl": "https://rakuspa.com/kanda/news/",
+    "FacilityName": "RAKU SPA 1010 神田",
+    "FacilityAliases": "RAKU SPA 1010 神田;らくスパ 1010 神田;らくスパ1010神田;RAKU SPA 1010 KANDA",
+    "HttpTimeoutSeconds": 20,
+    "MaxPageBytes": 1048576,
+    "MaxLinkedPagesPerRequest": 8,
+    "MaxCandidateArticles": 20
+  },
+  "AzureOpenAI": {
+    "Endpoint": "",
+    "DeploymentName": "",
+    "ApiVersion": "2024-10-21",
+    "ApiKey": "",
+    "HttpTimeoutSeconds": 30,
+    "MaxInputCharacters": 80000,
+    "Temperature": 0,
+    "MaxTokens": 2000
+  }
+}
