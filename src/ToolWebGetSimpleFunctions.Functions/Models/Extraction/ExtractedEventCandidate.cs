@@ -6,6 +6,7 @@ public sealed class ExtractedEventCandidate
     public string StartDate { get; set; } = string.Empty;
     public string EndDate { get; set; } = string.Empty;
     public bool VenueConfirmed { get; set; }
+    public string VenueEvidence { get; set; } = string.Empty;
     public string EventType { get; set; } = string.Empty;
     public List<string> SourceUrls { get; set; } = [];
     public List<string> EvidenceSnippets { get; set; } = [];

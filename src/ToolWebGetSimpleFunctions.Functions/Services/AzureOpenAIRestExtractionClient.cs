@@ -111,13 +111,14 @@ public sealed class AzureOpenAIRestExtractionClient : IAzureOpenAIExtractionClie
                     {
                         type = "object",
                         additionalProperties = false,
-                        required = new[] { "title", "startDate", "endDate", "venueConfirmed", "eventType", "sourceUrls", "evidenceSnippets", "confidence", "warnings" },
+                        required = new[] { "title", "startDate", "endDate", "venueConfirmed", "venueEvidence", "eventType", "sourceUrls", "evidenceSnippets", "confidence", "warnings" },
                         properties = new
                         {
                             title = new { type = "string" },
                             startDate = new { type = "string" },
                             endDate = new { type = "string" },
                             venueConfirmed = new { type = "boolean" },
+                            venueEvidence = new { type = "string" },
                             eventType = new { type = "string" },
                             sourceUrls = new { type = "array", items = new { type = "string" } },
                             evidenceSnippets = new { type = "array", items = new { type = "string" } },
