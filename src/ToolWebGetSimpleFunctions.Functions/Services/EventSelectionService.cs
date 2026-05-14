@@ -39,7 +39,7 @@ public sealed class EventSelectionService : IEventSelectionService
         var start = DateOnly.Parse(candidate.StartDate);
         var end = DateOnly.Parse(candidate.EndDate);
         var initialPeak = Enumerable.Range(0, 3)
-            .Select(start.AddDays)
+            .Select(days => start.AddDays(days))
             .TakeWhile(day => day <= end)
             .Select(day => day.ToString("yyyy-MM-dd"))
             .ToList();

@@ -63,7 +63,7 @@ public sealed class AzureOpenAIRestExtractionClientTests
     public async Task ExtractAsync_WhenInputExceedsLimit_ThrowsExplicitErrorAsync()
     {
         var client = new AzureOpenAIRestExtractionClient(
-            new StubHttpClientFactory(new HttpClient(new StubHttpMessageHandler((_, _) => throw new Xunit.Sdk.XunitException("HTTP should not be called.")))),
+            new StubHttpClientFactory(new HttpClient(new StubHttpMessageHandler((_, _) => throw new InvalidOperationException("HTTP should not be called.")))),
             Microsoft.Extensions.Options.Options.Create(new AzureOpenAIOptions
             {
                 Endpoint = "https://example.openai.azure.com",

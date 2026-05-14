@@ -42,7 +42,7 @@ public sealed class RakuSpaSourceCollectorTests
                 <p>RAKU SPA 1010 神田で開催</p>
                 </body></html>
                 """),
-            _ => throw new Xunit.Sdk.XunitException($"Unexpected URL: {request.RequestUri}")
+            _ => throw new InvalidOperationException($"Unexpected URL: {request.RequestUri}")
         });
 
         var collector = CreateCollector(handler, new SourceCollectionOptions
@@ -66,6 +66,7 @@ public sealed class RakuSpaSourceCollectorTests
     [Fact]
     public async Task CollectAsync_WhenResponseUsesShiftJis_DecodesPageAsync()
     {
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         var bytes = Encoding.GetEncoding("shift_jis").GetBytes("""
             <html><head><title>人気作品コラボ開催決定</title></head><body>
             <p>2026年5月28日からRAKU SPA 1010 神田で開催</p>

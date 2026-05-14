@@ -19,11 +19,6 @@ public sealed class RakuSpaSourceCollector : ISourceCollector
     private readonly SourceCollectionOptions _options;
     private readonly ILogger<RakuSpaSourceCollector> _logger;
 
-    static RakuSpaSourceCollector()
-    {
-        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-    }
-
     public RakuSpaSourceCollector(
         IHttpClientFactory httpClientFactory,
         IHtmlTextExtractor extractor,
