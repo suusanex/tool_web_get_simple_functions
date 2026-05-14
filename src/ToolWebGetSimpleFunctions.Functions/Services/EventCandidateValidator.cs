@@ -148,15 +148,24 @@ public sealed class EventCandidateValidator : IEventCandidateValidator
             return tokens;
         }
 
-        tokens.Add(dateText);
-        tokens.Add($"{parsedDate.Year:D4}/{parsedDate.Month}/{parsedDate.Day}");
-        tokens.Add($"{parsedDate.Year:D4}/{parsedDate.Month:D2}/{parsedDate.Day:D2}");
-        tokens.Add($"{parsedDate.Year:D4}年{parsedDate.Month}月{parsedDate.Day}日");
-        tokens.Add($"{parsedDate.Year:D4}年{parsedDate.Month:D2}月{parsedDate.Day:D2}日");
-        tokens.Add($"{parsedDate.Month}/{parsedDate.Day}");
-        tokens.Add($"{parsedDate.Month:D2}/{parsedDate.Day:D2}");
-        tokens.Add($"{parsedDate.Month}月{parsedDate.Day}日");
-        tokens.Add($"{parsedDate.Month:D2}月{parsedDate.Day:D2}日");
+        var tokenBuilders = new Func<DateOnly, string>[]
+        {
+            date => date.ToString("yyyy-MM-dd"),
+            date => date.ToString("yyyy/M/d"),
+            date => date.ToString("yyyy/MM/dd"),
+            date => date.ToString("yyyy年M月d日"),
+            date => date.ToString("yyyy年MM月dd日"),
+            date => date.ToString("M/d"),
+            date => date.ToString("MM/dd"),
+            date => date.ToString("M月d日"),
+            date => date.ToString("MM月dd日")
+        };
+
+        foreach (var tokenBuilder in tokenBuilders)
+        {
+            tokens.Add(tokenBuilder(parsedDate));
+        }
+
         return tokens;
     }
 

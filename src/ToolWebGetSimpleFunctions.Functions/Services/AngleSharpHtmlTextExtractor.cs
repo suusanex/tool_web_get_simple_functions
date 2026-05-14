@@ -49,7 +49,8 @@ public sealed class AngleSharpHtmlTextExtractor : IHtmlTextExtractor
     private static string ToAbsoluteUrl(string baseUrl, string href)
     {
         if (Uri.TryCreate(href, UriKind.Absolute, out var absolute)
-            && (absolute.Scheme == Uri.UriSchemeHttp || absolute.Scheme == Uri.UriSchemeHttps))
+            && (string.Equals(absolute.Scheme, Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(absolute.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase)))
         {
             return absolute.ToString();
         }

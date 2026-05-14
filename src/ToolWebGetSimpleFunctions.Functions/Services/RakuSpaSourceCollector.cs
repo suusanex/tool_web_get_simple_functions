@@ -12,7 +12,10 @@ public sealed class RakuSpaSourceCollector : ISourceCollector
     private static readonly string[] Signals = ["コラボ", "開催決定", "スペシャルイベント", "×極楽湯", "×RAKU SPA"];
     private static readonly string[] CampaignPathKeywords = ["campaign", "special", "press", "collabo", "collaboration", "event"];
     private static readonly string[] CampaignTextSignals = ["コラボ", "開催決定", "スペシャルイベント", "キャンペーン", "特設", "詳細", "PR TIMES"];
-    private static readonly Regex DateLikeRegex = new(@"(?:\d{4}[/-]\d{1,2}[/-]\d{1,2}|\d{4}年\d{1,2}月\d{1,2}日|\d{1,2}月\d{1,2}日(?:\s*[〜～~\-−]\s*(?:\d{1,2}月)?\d{1,2}日)?)", RegexOptions.Compiled);
+    private const string NumericDatePattern = @"\d{4}[/-]\d{1,2}[/-]\d{1,2}";
+    private const string JapaneseDatePattern = @"\d{4}年\d{1,2}月\d{1,2}日";
+    private const string JapaneseDateRangePattern = @"\d{1,2}月\d{1,2}日(?:\s*[〜～~\-−]\s*(?:\d{1,2}月)?\d{1,2}日)?";
+    private static readonly Regex DateLikeRegex = new($"(?:{NumericDatePattern}|{JapaneseDatePattern}|{JapaneseDateRangePattern})", RegexOptions.Compiled);
 
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IHtmlTextExtractor _extractor;
