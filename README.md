@@ -1,0 +1,2 @@
+# tool_web_get_simple_functions
+Web情報取得系のシンプルなFunctionsをまとめておく
