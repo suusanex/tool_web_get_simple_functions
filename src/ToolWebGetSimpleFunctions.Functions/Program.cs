@@ -1,8 +1,11 @@
+using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using ToolWebGetSimpleFunctions.Functions.Options;
 using ToolWebGetSimpleFunctions.Functions.Services;
+
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()

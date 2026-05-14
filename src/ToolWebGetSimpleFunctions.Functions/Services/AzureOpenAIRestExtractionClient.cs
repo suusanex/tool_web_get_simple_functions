@@ -68,7 +68,7 @@ public sealed class AzureOpenAIRestExtractionClient : IAzureOpenAIExtractionClie
         var compactInput = JsonSerializer.Serialize(input);
         if (compactInput.Length > _options.MaxInputCharacters)
         {
-            compactInput = compactInput[.._options.MaxInputCharacters];
+            throw new InvalidOperationException($"Extraction input exceeded the configured character limit. Actual={compactInput.Length}, Limit={_options.MaxInputCharacters}.");
         }
 
         var payload = new

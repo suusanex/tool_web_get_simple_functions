@@ -19,7 +19,7 @@
 - Easy Auth と Function trigger の関係は、Function 側を `AuthorizationLevel.Anonymous` とし、認証強制を App Service Authentication / Microsoft Entra 側に置く契約で明示されている。これは Function key を mobile/browser URL に含めないという Plan 意図と整合する。
 - Source collection は AngleSharp を採用し、独自 HTML parser や Playwright を禁止している。`AGENTS.md` の BCL/framework/OSS 優先方針と整合する。
 - Failure handling は silent fallback を禁止し、fatal source fetch / AOAI failure / malformed Structured Outputs response を explicit error として扱う契約になっている。`AGENTS.md` の失敗時フォールバック禁止方針と整合する。
-- `local.settings.json` は production address として列挙されているが、local-only / secrets not committed の扱いが明記されている。実装時には `.gitignore` と secret placeholder の扱いを確認する必要がある。
+- `local.settings.json` は local-only のため commit せず、repository には `local.settings.sample.json` を置いて `.gitignore` で保護する。
 
 ## Scope checked
 

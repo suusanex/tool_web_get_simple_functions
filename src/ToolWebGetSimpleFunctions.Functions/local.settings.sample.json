@@ -5,12 +5,18 @@
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated"
   },
   "Application": {
-    "TimeZone": "Asia/Tokyo"
+    "TimeZone": "Asia/Tokyo",
+    "RequireAuthenticatedUser": true
   },
   "SourceCollection": {
     "OfficialNewsUrl": "https://rakuspa.com/kanda/news/",
     "FacilityName": "RAKU SPA 1010 神田",
-    "FacilityAliases": "RAKU SPA 1010 神田;らくスパ 1010 神田;らくスパ1010神田;RAKU SPA 1010 KANDA",
+    "FacilityAliases": [
+      "RAKU SPA 1010 神田",
+      "らくスパ 1010 神田",
+      "らくスパ1010神田",
+      "RAKU SPA 1010 KANDA"
+    ],
     "HttpTimeoutSeconds": 20,
     "MaxPageBytes": 1048576,
     "MaxLinkedPagesPerRequest": 8,

@@ -38,6 +38,12 @@ public sealed class RakuSpaEventLookupService : IRakuSpaEventLookupService
         try
         {
             var correlationId = Guid.NewGuid().ToString("N");
+            using var scope = _logger.BeginScope(new Dictionary<string, object?>
+            {
+                ["CorrelationId"] = correlationId,
+                ["SearchDate"] = searchDate.ToString("yyyy-MM-dd")
+            });
+
             _logger.LogInformation("Event lookup started. CorrelationId={CorrelationId} SearchDate={SearchDate}", correlationId, searchDate.ToString("yyyy-MM-dd"));
 
             var (input, summary) = await _sourceCollector.CollectAsync(searchDate, cancellationToken).ConfigureAwait(false);

@@ -122,27 +122,42 @@ public sealed class EventCandidateValidator : IEventCandidateValidator
 
     private static bool IsDateTraceable(string dateText, ExtractionInput input)
     {
-        if (input.DetectedDateLikeStrings.Any(s => string.Equals(NormalizeDateLike(s), dateText, StringComparison.Ordinal)))
+        var candidateTokens = BuildDateTokens(dateText);
+        if (candidateTokens.Count == 0)
+        {
+            return false;
+        }
+
+        if (input.DetectedDateLikeStrings.Any(source => candidateTokens.Any(token => ContainsIgnoreCase(source, token))))
         {
             return true;
         }
 
-        return input.Documents.Any(d => ContainsIgnoreCase(d.Title, dateText) || ContainsIgnoreCase(d.Text, dateText));
+        return input.Documents.Any(d =>
+            candidateTokens.Any(token =>
+                ContainsIgnoreCase(d.Title, token)
+                || ContainsIgnoreCase(d.Text, token)
+                || d.ImageAltTexts.Any(imageAltText => ContainsIgnoreCase(imageAltText, token))));
     }
 
-    private static string NormalizeDateLike(string value)
+    private static HashSet<string> BuildDateTokens(string dateText)
     {
-        var text = value.Trim().Replace('/', '-');
-        var parts = text.Split('-', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        if (parts.Length == 3 &&
-            int.TryParse(parts[0], out var y) &&
-            int.TryParse(parts[1], out var m) &&
-            int.TryParse(parts[2], out var d))
+        var tokens = new HashSet<string>(StringComparer.Ordinal);
+        if (!DateOnly.TryParseExact(dateText, "yyyy-MM-dd", out var parsedDate))
         {
-            return $"{y:D4}-{m:D2}-{d:D2}";
+            return tokens;
         }
 
-        return text;
+        tokens.Add(dateText);
+        tokens.Add($"{parsedDate.Year:D4}/{parsedDate.Month}/{parsedDate.Day}");
+        tokens.Add($"{parsedDate.Year:D4}/{parsedDate.Month:D2}/{parsedDate.Day:D2}");
+        tokens.Add($"{parsedDate.Year:D4}年{parsedDate.Month}月{parsedDate.Day}日");
+        tokens.Add($"{parsedDate.Year:D4}年{parsedDate.Month:D2}月{parsedDate.Day:D2}日");
+        tokens.Add($"{parsedDate.Month}/{parsedDate.Day}");
+        tokens.Add($"{parsedDate.Month:D2}/{parsedDate.Day:D2}");
+        tokens.Add($"{parsedDate.Month}月{parsedDate.Day}日");
+        tokens.Add($"{parsedDate.Month:D2}月{parsedDate.Day:D2}日");
+        return tokens;
     }
 
     private static bool ContainsTraceableText(string value, string corpus)

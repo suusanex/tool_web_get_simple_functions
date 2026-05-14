@@ -59,6 +59,33 @@ public sealed class AzureOpenAIRestExtractionClientTests
         Assert.DoesNotContain("\"type\":\"json_object\"", capturedRequest, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public async Task ExtractAsync_WhenInputExceedsLimit_ThrowsExplicitErrorAsync()
+    {
+        var client = new AzureOpenAIRestExtractionClient(
+            new StubHttpClientFactory(new HttpClient(new StubHttpMessageHandler((_, _) => throw new Xunit.Sdk.XunitException("HTTP should not be called.")))),
+            Microsoft.Extensions.Options.Options.Create(new AzureOpenAIOptions
+            {
+                Endpoint = "https://example.openai.azure.com",
+                DeploymentName = "gpt-test",
+                ApiVersion = "2024-10-21",
+                ApiKey = "dummy",
+                MaxInputCharacters = 10,
+                MaxTokens = 2000,
+                Temperature = 0
+            }),
+            NullLogger<AzureOpenAIRestExtractionClient>.Instance);
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => client.ExtractAsync(
+            new ExtractionInput
+            {
+                FacilityName = new string('a', 32)
+            },
+            CancellationToken.None));
+
+        Assert.Contains("exceeded the configured character limit", ex.Message, StringComparison.Ordinal);
+    }
+
     private sealed class StubHttpClientFactory(HttpClient client) : IHttpClientFactory
     {
         public HttpClient CreateClient(string name) => client;

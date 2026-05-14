@@ -13,11 +13,18 @@ public sealed class AngleSharpHtmlTextExtractor : IHtmlTextExtractor
         var title = doc.Title ?? string.Empty;
         var text = doc.Body?.TextContent?.Trim() ?? string.Empty;
 
-        var links = doc.QuerySelectorAll("a[href]")
-            .Select(node => node.GetAttribute("href"))
-            .Where(href => !string.IsNullOrWhiteSpace(href))
-            .Select(href => ToAbsoluteUrl(url, href!))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
+        var linkDetails = doc.QuerySelectorAll("a[href]")
+            .Select(node => new SourceLink
+            {
+                Url = ToAbsoluteUrl(url, node.GetAttribute("href")!),
+                Text = node.TextContent?.Trim() ?? string.Empty
+            })
+            .GroupBy(link => link.Url, StringComparer.OrdinalIgnoreCase)
+            .Select(group => group.OrderByDescending(link => link.Text.Length).First())
+            .ToList();
+
+        var links = linkDetails
+            .Select(link => link.Url)
             .ToList();
 
         var imageAltTexts = doc.QuerySelectorAll("img[alt]")
@@ -33,6 +40,7 @@ public sealed class AngleSharpHtmlTextExtractor : IHtmlTextExtractor
             SourceType = sourceType,
             Title = title,
             Text = text,
+            LinkDetails = linkDetails,
             Links = links,
             ImageAltTexts = imageAltTexts
         };
@@ -40,7 +48,8 @@ public sealed class AngleSharpHtmlTextExtractor : IHtmlTextExtractor
 
     private static string ToAbsoluteUrl(string baseUrl, string href)
     {
-        if (Uri.TryCreate(href, UriKind.Absolute, out var absolute))
+        if (Uri.TryCreate(href, UriKind.Absolute, out var absolute)
+            && (absolute.Scheme == Uri.UriSchemeHttp || absolute.Scheme == Uri.UriSchemeHttps))
         {
             return absolute.ToString();
         }

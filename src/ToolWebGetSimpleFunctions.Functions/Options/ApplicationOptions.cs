@@ -5,4 +5,6 @@ public sealed class ApplicationOptions
     public const string SectionName = "Application";
 
     public string TimeZone { get; set; } = "Asia/Tokyo";
+
+    public bool RequireAuthenticatedUser { get; set; } = true;
 }

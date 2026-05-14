@@ -103,6 +103,49 @@ public sealed class EventCandidateValidatorTests
         Assert.Contains(warnings, w => w.Contains("evidence snippets are not traceable", StringComparison.OrdinalIgnoreCase));
     }
 
+    [Fact]
+    public void Validate_WhenDateExistsOnlyInImageAltText_ReturnsValidCandidate()
+    {
+        var validator = new EventCandidateValidator();
+        var input = new ExtractionInput
+        {
+            SearchDate = "2026-05-29",
+            FacilityName = "RAKU SPA 1010 神田",
+            FacilityAliases = ["RAKU SPA 1010 神田", "らくスパ 1010 神田"],
+            DetectedDateLikeStrings = [],
+            DetectedVenueLikeStrings = ["RAKU SPA 1010 神田"],
+            Documents =
+            [
+                new SourceDocument
+                {
+                    Url = "https://rakuspa.com/kanda/news/456",
+                    SourceType = "campaign_page",
+                    Title = "コラボバナー",
+                    Text = "RAKU SPA 1010 神田で開催",
+                    ImageAltTexts = ["5月28日から6月30日まで開催"]
+                }
+            ]
+        };
+
+        var candidate = new ExtractedEventCandidate
+        {
+            Title = "コラボバナー",
+            StartDate = "2026-05-28",
+            EndDate = "2026-06-30",
+            VenueConfirmed = true,
+            VenueEvidence = "RAKU SPA 1010 神田で開催",
+            EventType = "collaboration",
+            SourceUrls = ["https://rakuspa.com/kanda/news/456"],
+            EvidenceSnippets = ["RAKU SPA 1010 神田で開催"],
+            Confidence = "high"
+        };
+
+        var (validCandidates, warnings) = validator.Validate(input, [candidate]);
+
+        Assert.Single(validCandidates);
+        Assert.Empty(warnings);
+    }
+
     private static ExtractionInput BuildInput()
     {
         return new ExtractionInput

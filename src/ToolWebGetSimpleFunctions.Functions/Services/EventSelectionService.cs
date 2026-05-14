@@ -38,12 +38,11 @@ public sealed class EventSelectionService : IEventSelectionService
     {
         var start = DateOnly.Parse(candidate.StartDate);
         var end = DateOnly.Parse(candidate.EndDate);
-        var initialPeak = new List<string>
-        {
-            start.ToString("yyyy-MM-dd"),
-            start.AddDays(1).ToString("yyyy-MM-dd"),
-            start.AddDays(2).ToString("yyyy-MM-dd")
-        };
+        var initialPeak = Enumerable.Range(0, 3)
+            .Select(start.AddDays)
+            .TakeWhile(day => day <= end)
+            .Select(day => day.ToString("yyyy-MM-dd"))
+            .ToList();
 
         return new EventDto
         {

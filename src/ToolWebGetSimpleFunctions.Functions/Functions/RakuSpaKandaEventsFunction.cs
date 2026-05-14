@@ -33,6 +33,14 @@ public sealed class RakuSpaKandaEventsFunction
     {
         try
         {
+            if (_applicationOptions.RequireAuthenticatedUser && !IsAuthenticated(request))
+            {
+                _logger.LogWarning("Unauthorized request was rejected.");
+                var unauthorized = request.CreateResponse(System.Net.HttpStatusCode.Unauthorized);
+                await unauthorized.WriteStringAsync("Authentication is required.", cancellationToken).ConfigureAwait(false);
+                return unauthorized;
+            }
+
             var query = System.Web.HttpUtility.ParseQueryString(request.Url.Query);
             var searchDate = ResolveSearchDate(query["date"]);
             var result = await _service.LookupAsync(searchDate, cancellationToken).ConfigureAwait(false);
@@ -73,4 +81,8 @@ public sealed class RakuSpaKandaEventsFunction
         var localNow = TimeZoneInfo.ConvertTime(_clock.UtcNow, tz);
         return DateOnly.FromDateTime(localNow.DateTime);
     }
+
+    private static bool IsAuthenticated(HttpRequestData request)
+        => request.Headers.TryGetValues("x-ms-client-principal-id", out var principalIds) && principalIds.Any(v => !string.IsNullOrWhiteSpace(v))
+            || request.Headers.TryGetValues("x-ms-client-principal", out var principals) && principals.Any(v => !string.IsNullOrWhiteSpace(v));
 }

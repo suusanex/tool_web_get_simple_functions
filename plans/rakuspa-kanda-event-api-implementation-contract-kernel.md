@@ -64,7 +64,7 @@ Out of scope for this pass:
 | App startup | `src/ToolWebGetSimpleFunctions.Functions/Program.cs` | 新規作成のため repository source には未存在 | MissingButRequired | DI、Options、HttpClient registration、logging setup の production address |
 | Project file | `src/ToolWebGetSimpleFunctions.Functions/ToolWebGetSimpleFunctions.Functions.csproj` | 新規作成のため repository source には未存在 | MissingButRequired | Functions app project の production address |
 | `host.json` | `src/ToolWebGetSimpleFunctions.Functions/host.json` | 新規作成のため repository source には未存在 | MissingButRequired | Functions host configuration |
-| `local.settings.json` | `src/ToolWebGetSimpleFunctions.Functions/local.settings.json` | 新規作成のため repository source には未存在 | MissingButRequired | local secrets placeholder。repository commit 対象外 |
+| `local.settings.sample.json` | `src/ToolWebGetSimpleFunctions.Functions/local.settings.sample.json` | local template として repository に配置し、実運用の `local.settings.json` は各開発環境でコピーして作成する | Confirmed | local secrets placeholder。実ファイルの `local.settings.json` は `.gitignore` で commit 対象外 |
 | Easy Auth Microsoft provider | Azure App Service / Functions Authentication | Microsoft Learn provider configuration | Confirmed | Azure resource configuration。code artifact ではなく deployment/manual config contract |
 | Function trigger `AuthorizationLevel.Anonymous` | Function code attribute | Easy Auth protected endpoint contract | Confirmed | Function key をモバイル URL に含めない。platform 側で unauthenticated request を reject/redirect する |
 | Easy Auth unauthenticated action | App Service Authentication setting | Azure Portal / IaC / manual config | NeedsHumanDecision | Contract: deployed environment では unauthenticated request を allow しない。具体的な 401/302 は runtime-contract/test-design で扱う |
@@ -95,7 +95,8 @@ src/
     ToolWebGetSimpleFunctions.Functions.csproj
     Program.cs
     host.json
-    local.settings.json              # local only / not committed with secrets
+    local.settings.sample.json       # committed template without secrets
+    local.settings.json              # local only / gitignored
     Functions/
       RakuSpaKandaEventsFunction.cs
     Options/
@@ -382,7 +383,7 @@ Because this is a new application, all production addresses are missing and must
 | Selection | `Services/EventSelectionService.cs` | Implement active/next selection and busy phase classification | MissingButRequired |
 | Clock abstraction | `Services/IClock.cs`, `Services/SystemClock.cs` | Provide testable current time/date source | MissingButRequired |
 | Host config | `host.json` | Minimal Functions host config | MissingButRequired |
-| Local config | `local.settings.json` | Local-only placeholder; do not commit secrets | MissingButRequired |
+| Local config template | `local.settings.sample.json` | Committed template without secrets. Copy to local.settings.json for local execution. | Confirmed |
 | Plans artifact | `plans/rakuspa-kanda-event-api-implementation-contract-kernel.md` | Store this contract artifact in repository if implementation agent has repository write access | MissingButRequired |
 
 ## Prohibited substitutions
